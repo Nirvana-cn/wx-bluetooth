@@ -1,0 +1,4 @@
+<!--index.wxml-->
+<view>
+  <button bindtap='unlock'>蓝牙解锁</button>
+</view>
