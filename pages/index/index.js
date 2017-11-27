@@ -6,10 +6,6 @@ Page({
   },
   unlock() {
     let that = this
-    let buffer = new ArrayBuffer(16)
-    let dataView = new DataView(buffer)
-    dataView.setInt16(0, 16)
-    console.log(dataView.getInt16(0))
     wx.openBluetoothAdapter({
       success(res) {
         console.log('open bluetooth')
@@ -17,6 +13,12 @@ Page({
           deviceId: that.data.device,
           success(res) {
             console.log('bluetooth has connected')
+            let buffer = new ArrayBuffer(32)
+            for(let i=97;i<=100;i++){
+              let dataView = new DataView(buffer)
+              dataView.setInt8(i-97, i)
+              console.log(dataView.getInt8(i-97))
+            }
             wx.writeBLECharacteristicValue({
               deviceId: that.data.device,
               serviceId: that.data.service,
@@ -37,7 +39,9 @@ Page({
               success: function (res) {
                 console.log('notifyBLECharacteristicValueChange success')
                 wx.onBLECharacteristicValueChange(function (res) {
-                  console.log(`characteristic ${res.characteristicId} has changed, now is ${res.value}`)
+                  let dataView = new DataView(res.value)
+                  console.log(`characteristic ${res.characteristicId} has changed`)
+                  console.log(dataView.getInt8(0))
                   wx.readBLECharacteristicValue({
                     deviceId: that.data.device,
                     serviceId: that.data.service,
